@@ -2,6 +2,8 @@
 
 Various useful functions in my ts projects.
 
+Some recent functions have not yet been referenced in this English document. This means they were added to the code after the documentation was written or last updated. It is recommended to check the source code directly or the more up-to-date documentation in the repository for the complete list of available functions.
+
 **Array Functions**
 
 `createArray`
