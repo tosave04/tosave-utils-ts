@@ -5,11 +5,28 @@
  */
 export function safeJSONParse<T>(input: string): T | null {
 	try {
-		const parsed = JSON.parse(input)
-		return parsed // Renvoie l'objet parsé si tout se passe bien
+		const sanitizedInput = sanitizeJSON(input)
+		return JSON.parse(sanitizedInput)
 	} catch (error) {
-		const _error = error instanceof Error ? error.message : "Une erreur s'est produite"
-		process.env.NODE_ENV === "development" && console.error("Erreur safeJSONParse :", _error)
+		const _error =
+			error instanceof Error ? `safeJSONParse: ${error.message}` : "safeJSONParse: Une erreur s'est produite"
+
+		if (process.env.NODE_ENV === "development") {
+			console.error("Erreur safeJSONParse :", _error)
+			console.error("Contenu fautif (début) :", input.slice(0, 200))
+		}
+
 		return null
 	}
+}
+
+/**
+ * Nettoie une chaîne JSON en supprimant les caractères de contrôle non autorisés
+ * @param input Chaîne JSON brute
+ * @returns Chaîne nettoyée
+ */
+function sanitizeJSON(input: string): string {
+	return input.replace(/[\u0000-\u001F\u007F]/g, (char) => {
+		return /\n|\r|\t/.test(char) ? char : ""
+	})
 }
